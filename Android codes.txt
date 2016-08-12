@@ -1,0 +1,3199 @@
+1. Getting screen Dp (for example my phone is 320dp * 480dp) --
+
+
+        DisplayMetrics displayMetrics = getBaseContext().getResources().getDisplayMetrics();
+
+        float dpHeight = displayMetrics.heightPixels / displayMetrics.density;
+
+        Log.d("DP height", ""+dpHeight);
+
+
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+
+        Log.d("DP width", ""+dpWidth);
+
+
+ 
+2.Setting margin using Layout Params --
+
+
+      RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT); 
+        params.leftMargin = (int) valLeft;
+        params.topMargin = (int) valTop;
+        imageStar.setLayoutParams(params);
+
+
+imageStar is an ImageView inside a Relative layout. 
+Thats why this setting margin using Layout Params uses a RelativeLayout here. Otherwise it will be Linear or any other Layout.
+
+
+
+3. Converting dp to Px --
+
+
+
+   i. for Activity ->
+
+
+
+public long dpToPx(Double dp) {
+
+        float density = getApplicationContext().getResources().getDisplayMetrics().density;
+        return Math.round((Double)dp * density);
+         /*
+         Remove the Math.round above and make the return arguement in double to make it return Double and              not rounded up values. But you need to return rounded up int and Long because many functions like Setting margins using Layout Params take int values.
+         */
+
+    }
+
+
+
+
+ii. for fragment ->
+
+
+
+public long dpToPx(Double dp) {
+
+        float density = getActivity().getApplicationContext().getResources().getDisplayMetrics().density;
+        return Math.round((Double)dp * density);
+
+
+    }
+
+
+
+The above 2 function give approx values, not exact. 
+
+Setting X,Y position like SetX, SetY, SetLeft and functions like Translate, TranslateAnimation, Setting margin using Layout Params all take values in pixels. 
+
+So you need to convert DP to px first and then pass that Pixel value depending on how much the value you want in DP.
+
+
+
+
+4. Navigating from one Fragment to another Fragment --
+
+Fragment fragment = new SubAccountFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.rel, fragment).commit();
+
+/* where, SubAccountFragment is the Fragment you want to load in place of R.id.rel of the current layout.
+   R.id.rel is the root layout in the current layout. For example the topmost Relative Layout.
+*/
+
+5. Shared Preferences in a Fragment -- 
+
+SharedPreferences userPreference= getActivity().getSharedPreferences("UserDate", Context.MODE_PRIVATE);
+
+
+
+6. A typical fragment class code -- 
+
+
+<title>FindPeopleFragment.java</title>
+
+
+package info.androidhive.slidingmenu;
+
+import android.app.Fragment;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.app.sewingworld.R;
+
+public class FindPeopleFragment extends Fragment {
+	
+	// This kind of empty constructor is necessary in all fragments
+        public FindPeopleFragment(){}
+	
+	@Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+ 
+        // You can inflate any XML here and target the views in that XML.
+        View rootView = inflater.inflate(R.layout.fragment_find_people, container, false);
+
+        /* Let us suppose that there is a TextView named text4 in fragment_find_people.xml, you target it             like this here in the fragment */
+        TextView delete = (TextView)rootView.findViewById(R.id.text4);
+         
+        return rootView;
+    }
+}
+
+
+
+7. AutoCompleteTextView example --
+
+
+<title>In the XML layout</title>
+
+
+<AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:background="@drawable/search"
+                    android:hint="Dealer"
+                    android:layout_marginBottom="10dp"
+                    android:padding="50dp"
+                    android:id="@+id/search"
+                    android:layout_below="@+id/edtLocality"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+                <AutoCompleteTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="35dp"
+                    android:background="@drawable/search"
+                    android:hint="City"
+                    android:layout_marginBottom="10dp"
+                    android:id="@+id/city"
+                    android:layout_below="@+id/search"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true" />
+
+
+<title>In the Java class</title>
+
+
+    Outside onCreate -->
+
+
+    String[] searchItems, cityItems;
+    Button buttonsubmit;
+    AutoCompleteTextView search, city;
+    ArrayAdapter adapterSearch, adapterCity;
+
+
+    Inside onCreate -->
+
+
+    search = (AutoCompleteTextView)rootView.findViewById(R.id.search);
+    city = (AutoCompleteTextView)rootView.findViewById(R.id.city);
+    searchItems= new String[]{"Android ", "java", "IOS", "SQL", "JDBC", "Web services"};
+    cityItems= new String[]{"Android ", "java", "IOS", "SQL", "JDBC", "Web services"};
+
+        search = (AutoCompleteTextView)rootView.findViewById(R.id.search);
+        city = (AutoCompleteTextView)rootView.findViewById(R.id.city);
+        searchItems= new String[]{"Android ", "java", "IOS", "SQL", "JDBC", "Web services"};
+        cityItems= new String[]{"Android ", "java", "IOS", "SQL", "JDBC", "Web services"};
+
+        adapterSearch = new ArrayAdapter(getActivity().getBaseContext(),android.R.layout.simple_list_item_1,searchItems);
+        search.setAdapter(adapterSearch);
+        search.setThreshold(1);
+        adapterCity = new ArrayAdapter(getActivity().getBaseContext(),android.R.layout.simple_list_item_1,cityItems);
+        city.setAdapter(adapterCity);
+        city.setThreshold(1);
+
+
+// Likewise there is an AutoCompleteMultiTextView in android
+
+
+
+8. Sending SMS --     
+
+
+In Android, you can use SmsManager API or devices Built-in SMS application to send SMS's. In this tutorial, we shows you two basic examples to send SMS message −
+
+
+   SmsManager API -->
+
+   SmsManager smsManager = SmsManager.getDefault();
+   smsManager.sendTextMessage("phoneNo", null, "sms message", null, null);
+
+
+   Built-in SMS application -->
+
+   Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+   sendIntent.putExtra("sms_body", "default content"); 
+   sendIntent.setType("vnd.android-dir/mms-sms");
+   startActivity(sendIntent);
+
+
+And we need to add this permission to manifest -->
+
+<uses-permission android:name="android.permission.SEND_SMS" />       
+
+
+
+9. Adding/calling a fragment in activity --
+
+
+
+
+10. Android Intent from Fragment to Activity --
+
+
+
+
+
+
+11. Android Yes/No alert box --
+
+
+         This code is for a fragment a fragment -->
+
+
+                        // If you want to use this in an activity, do some workaround like changing getActivity() to this or getBaseContext() in 1st line below.
+                        
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+
+			// set title
+			alertDialogBuilder.setTitle("Your Title");
+
+			// set dialog message
+			alertDialogBuilder
+				.setMessage("Click yes to exit!")
+				.setCancelable(false)
+				.setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						// if this button is clicked, close
+						// current activity
+						// Do something
+					}
+				  })
+				.setNegativeButton("No",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						// if this button is clicked, just close
+						// the dialog box and do nothing
+						dialog.cancel();
+					}
+				});
+
+				// create alert dialog
+				AlertDialog alertDialog = alertDialogBuilder.create();
+
+				// show it
+				alertDialog.show();
+
+
+
+12. Allow networking on main thread --
+
+
+           Put this on onCreate -->
+
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+
+
+By default android keeps networking from main thread blocked. Use this above code to allow networking from main thread.
+
+
+Otherwise it will show this kind of error ->
+
+android.os.NetworkOnMainThreadException
+at android.os.StrictMode$AndroidBlockGuardPolicy.onNetwork(StrictMode.java:1117)
+
+
+
+
+13. Actionbar title centered --
+
+
+          actionbar.xml -->
+
+
+    <?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+
+    <TextView
+        android:id="@+id/actionbar_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:maxLines="1"
+        android:clickable="false"
+        android:focusable="false"
+        android:longClickable="false"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="#FFFFFF" />
+
+   </LinearLayout>
+
+
+
+          fragment.java -->
+
+
+        // If you are using this for an activity, remove getActivity() from all the lines of codes below.
+        
+        final ActionBar abar = getActivity().getActionBar();
+
+        View viewActionBar = getActivity().getLayoutInflater().inflate(R.layout.actionbar, null);
+        ActionBar.LayoutParams params = new ActionBar.LayoutParams(
+                ActionBar.LayoutParams.WRAP_CONTENT,
+                ActionBar.LayoutParams.MATCH_PARENT,
+                Gravity.CENTER);
+        TextView textviewTitle = (TextView) viewActionBar.findViewById(R.id.actionbar_textview);
+        textviewTitle.setText("Action Bar Tile here");
+        abar.setCustomView(viewActionBar, params);
+        abar.setDisplayShowCustomEnabled(true);
+        abar.setDisplayShowTitleEnabled(false);
+        abar.setDisplayHomeAsUpEnabled(true);
+
+        abar.setHomeButtonEnabled(true);
+
+
+
+
+
+14. Android hide actionbar/full screen activity --
+
+
+      Use a theme with no ActionBar like -->
+
+             
+            <resources>
+
+              <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        
+              </style>
+
+            </resources>
+
+
+
+
+15. Sending JSON to a URL and Getting response from a URL in String --
+
+      For this we use OkHttp.
+
+
+
+ i. Put OkHttp dependency in your grade (Module: app)
+      
+
+
+ ii. Now make a class called 'ResponseOKhttp.java' --->
+
+
+
+public class ResponseOKhttp
+
+{
+
+    OkHttpClient client = new OkHttpClient();
+
+    public static final MediaType JSON
+            = MediaType.parse("application/json; charset=utf-8");
+
+    public String run(String url, String json) throws IOException {
+        RequestBody body = RequestBody.create(JSON, json);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .build();
+
+        Response response = client.newCall(request).execute();
+        return response.body().string();
+    }
+
+}
+
+
+
+
+   iii. Just instantiate in your activity inside onCreate to get response in String from a  URL like --->
+
+
+      // put it inside doInBackground of your AsyncTask
+
+
+        ResponseOKhttp example = new ResponseOKhttp();
+
+            String response = null;
+            try {
+                JSONObject json1 = new JSONObject();
+                json1.put("UID", "9");
+                json1.put("FIRMID", "9");
+                response = example.run(AppConstants.myAdsURL, json1.toString());
+            }
+            catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Log.d("responsegot",response);
+
+
+
+
+
+16. OnClickListener --
+
+
+
+          button.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        //do something
+
+                    }
+                });
+
+
+
+
+17. ListView OnItenClickListener --
+
+
+
+
+18. Setting image in ImageView using Picasso (the proper way) --
+
+
+                Picasso.with(getBaseContext())
+                .load(R.drawable.actual_image)
+                .placeholder(R.drawable.default_image)
+                .error(R.drawable.default_image)
+                .into(imageView);
+
+
+
+
+19. Android sending Text and Image to PHP/MySQL server using multipart entity --
+
+
+   i. Save this class in your Util package - 
+
+     
+        MultipartUtility.java
+       ———————————————————————
+
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MultipartUtility {
+    private final String boundary;
+    private static final String LINE_FEED = "\r\n";
+    private HttpURLConnection httpConn;
+    private String charset;
+    private OutputStream outputStream;
+    private PrintWriter writer;
+
+    /**
+     * This constructor initializes a new HTTP POST request with content type
+     * is set to multipart/form-data
+     *
+     * @param requestURL
+     * @param charset
+     * @throws IOException
+     */
+    public MultipartUtility(String requestURL, String charset)
+            throws IOException {
+        this.charset = charset;
+
+        // creates a unique boundary based on time stamp
+        boundary = "===" + System.currentTimeMillis() + "===";
+
+        URL url = new URL(requestURL);
+        httpConn = (HttpURLConnection) url.openConnection();
+        httpConn.setUseCaches(false);
+        httpConn.setDoOutput(true); // indicates POST method
+        httpConn.setDoInput(true);
+        httpConn.setRequestProperty("Content-Type",
+                "multipart/form-data; boundary=" + boundary);
+        httpConn.setRequestProperty("User-Agent", "CodeJava Agent");
+        httpConn.setRequestProperty("Test", "Bonjour");
+        outputStream = httpConn.getOutputStream();
+        writer = new PrintWriter(new OutputStreamWriter(outputStream, charset),
+                true);
+    }
+
+    /**
+     * Adds a form field to the request
+     *
+     * @param name  field name
+     * @param value field value
+     */
+    public void addFormField(String name, String value) {
+        writer.append("--" + boundary).append(LINE_FEED);
+        writer.append("Content-Disposition: form-data; name=\"" + name + "\"")
+                .append(LINE_FEED);
+        writer.append("Content-Type: text/plain; charset=" + charset).append(
+                LINE_FEED);
+        writer.append(LINE_FEED);
+        writer.append(value).append(LINE_FEED);
+        writer.flush();
+    }
+
+    /**
+     * Adds a upload file section to the request
+     *
+     * @param fieldName  name attribute in <input type="file" name="..." />
+     * @param uploadFile a File to be uploaded
+     * @throws IOException
+     */
+    public void addFilePart(String fieldName, File uploadFile)
+            throws IOException {
+        String fileName = uploadFile.getName();
+        writer.append("--" + boundary).append(LINE_FEED);
+        writer.append(
+                "Content-Disposition: form-data; name=\"" + fieldName
+                        + "\"; filename=\"" + fileName + "\"")
+                .append(LINE_FEED);
+        writer.append(
+                "Content-Type: "
+                        + URLConnection.guessContentTypeFromName(fileName))
+                .append(LINE_FEED);
+        writer.append("Content-Transfer-Encoding: binary").append(LINE_FEED);
+        writer.append(LINE_FEED);
+        writer.flush();
+
+        FileInputStream inputStream = new FileInputStream(uploadFile);
+        byte[] buffer = new byte[4096];
+        int bytesRead = -1;
+        while ((bytesRead = inputStream.read(buffer)) != -1) {
+            outputStream.write(buffer, 0, bytesRead);
+        }
+        outputStream.flush();
+        inputStream.close();
+
+        writer.append(LINE_FEED);
+        writer.flush();
+    }
+
+    /**
+     * Adds a header field to the request.
+     *
+     * @param name  - name of the header field
+     * @param value - value of the header field
+     */
+    public void addHeaderField(String name, String value) {
+        writer.append(name + ": " + value).append(LINE_FEED);
+        writer.flush();
+    }
+
+    /**
+     * Completes the request and receives response from the server.
+     *
+     * @return a list of Strings as response in case the server returned
+     * status OK, otherwise an exception is thrown.
+     * @throws IOException
+     */
+    public List<String> finish() throws IOException {
+        List<String> response = new ArrayList<String>();
+
+        writer.append(LINE_FEED).flush();
+        writer.append("--" + boundary + "--").append(LINE_FEED);
+        writer.close();
+
+        // checks server's status code first
+        int status = httpConn.getResponseCode();
+        if (status == HttpURLConnection.HTTP_OK) {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    httpConn.getInputStream()));
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                response.add(line);
+            }
+            reader.close();
+            httpConn.disconnect();
+        } else {
+            throw new IOException("Server returned non-OK status: " + status);
+        }
+
+        return response;
+    }
+}
+
+
+
+
+ii. put this outside onCreate in your activity - 
+
+    private MultipartUtility multipart;
+    private List<String> response;
+    private String charset, imagePathForMultipart;
+
+
+
+iii. put this in your activity inside doInBackground of AsyncTask to send data to server - 
+
+
+            charset = "UTF-8";
+
+            try {
+                multipart = new MultipartUtility(MyApplication.registerURL, charset);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            multipart.addFormField("FIRMNAME", "param_value");
+            multipart.addFormField("EMAIL", "param_value");
+            multipart.addFormField("ADDRESS", "param_value");
+            multipart.addFormField("BUSINESSTYPE", "param_value");
+            multipart.addFormField("CITY", "param_value");
+
+
+            try {
+                multipart.addFilePart("Image", new File(imagePathForMultipart));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            List<String> response = null;
+            try {
+                response = multipart.finish();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Log.i("resp22", response+"");
+
+
+
+
+
+
+20. Loading a Fragment in an activity in place of a FrameLayout whose id is 'gridFrame' --
+
+
+                Fragment newFragment = new GridFragment();
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                ft.add(R.id.gridFrame, newFragment).commit();
+
+
+
+
+21. Declaring and initializing a rootView in a fragment --
+
+ 
+    View rootView = inflater.inflate(R.layout.test_fragment, container, false);
+
+
+
+
+22. Send SMS on button click. This will open the SMS editor with the message below --
+
+
+      button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {                
+
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra("sms_body", "Just sending launching an SMS compose box from an android app.";
+                startActivity(Intent.createChooser(sharingIntent, "Share via"));
+
+
+            }
+        });
+
+
+
+
+23. Android conversion from image path on phone to bitmap, from bitmap to Base64 String --
+
+
+
+        Bitmap bm = BitmapFactory.decodeFile(picturePath);
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 90, bao);
+
+        byte[] ba = bao.toByteArray();
+        ba1 = Base64.encodeBytes(ba);
+
+
+
+
+
+
+
+24. All ArrayList elements in a loop --
+
+
+
+                List<String> arrayList = new ArrayList<String>();                
+
+                for (int i = 0; i < arrayList.size(); i++) {
+			System.out.println(list.get(i));
+		} 
+
+
+
+
+
+25. Setting margins for a view inside linear layout --
+
+
+        alarmsel = (ImageView)findViewById(R.id.image1);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+         
+        // lp.setMargins(left, top, right, bottom);
+
+        lp.setMargins(80, 80, 0, 0);
+        
+        alarmsel.setLayoutParams(lp);
+
+   // Check if we can apply layout params for relative layouts too..
+
+
+
+
+
+26. Adding a TextView in java -
+
+RelativeLayout layoutt;
+
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+
+    layoutt = (RelativeLayout)findViewById(R.id.layoutt);
+
+    TextView dynamicTextView = new TextView(this);
+
+    dynamicTextView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+            RelativeLayout.LayoutParams.WRAP_CONTENT));
+
+    dynamicTextView.setText(" Hello World yoyo");
+
+    layoutt.addView(dynamicTextView);
+}
+
+27. Reading all rows for a column of Parse.com database and printing data to a ListView -
+
+List<ParseObject> ob;
+(put this outSide OnCreate, inside Main class that extends activity)
+
+
+listView = (ListView)findViewById(R.id.listView);
+
+ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+        android.R.layout.simple_list_item_1);
+//-------- <Reading data from parse.com database> ---------------------------
+
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
+                "Obb1");
+         // Obb1 is the class name of the Parse.com database
+
+        query.orderByAscending("_created_at");
+        try {
+            ob = query.find();
+        } catch (ParseException e) {
+            Log.e("Error", e.getMessage());
+            e.printStackTrace();
+        }
+        for (ParseObject country : ob) {
+            adapter.add((String) country.get("Message"));
+
+             // Message is the Column name
+        }
+
+//-------- </Reading data from parse.com database> --------------------------
+
+        
+listView.setAdapter(adapter);
+
+listView.setOnItemClickListener(this);
+
+/* or OnClick functionality, write separate code inside -  
+// @Override
+public void onItemClick(AdapterView<?> parent, View view, int position, long id) {     }
+
+*/
+ 
+
+
+28.  Case of an Activty not showing ActionBar inspite of the theme having an ActionBar with it --
+
+For the main layout in the xml file of the activity, set
+
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+instead of
+
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+
+
+29.
+
+i -Displaying Toast Message on android Activity -
+
+Toast.makeText(getApplicationContext(), "this is my Toast message!!! =)",
+   Toast.LENGTH_LONG).show();
+
+
+ii – Displaying Toast Message on a fragment -
+
+Toast.makeText(getActivity(), "Text " + posn, Toast.LENGTH_LONG).show();
+
+
+
+
+
+
+30. Intent in android - 
+
+Intent i = new Intent(getApplicationContext(),MainActivity.class);
+startActivity(i);
+
+
+31. Check if an app is run for first time after installation - 
+
+Boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+        .getBoolean("isfirstrun", true);
+
+if (isFirstRun) {
+
+    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit()
+            .putBoolean("isfirstrun", false).commit();
+
+    // Do something here
+
+}
+
+
+
+
+
+32. 
+
+i - Shared Preferences to save data on Phone  in an Avtivity- 
+public class MainActivity extends Activity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        setValues();
+        getValues();
+
+    }
+
+
+    void setValues(){
+
+        // 'userInfo' is the name of this SharedPreference.
+        //  Using this name you save data and retrieve data from this same SharedPreference.
+
+        SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        editor.putString("Username", "Asutoshh");
+
+        // You have run this app once, and if you run this app again and you want to
+        // to modify the data for 'Username' above, just replace 'Asutosh' with the new value
+
+        editor.apply();
+
+    }
+
+
+    void getValues(){
+
+        SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+
+        // the 2nd parameter below remains not assigned like that by default.
+        // Its how the developers at android OS team designed this method.
+
+        String name = sharedPref.getString("Username", "");
+
+        Toast.makeText(getApplicationContext(), name, Toast.LENGTH_LONG).show();
+
+    }
+
+
+}
+
+i i - Shared Preferences to save data on Phone in a Fragment - 
+public class MainActivity extends Activity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        setValues();
+        getValues();
+
+    }
+
+
+    void setValues(){
+
+        // 'userInfo' is the name of this SharedPreference.
+        //  Using this name you save data and retrieve data from this same SharedPreference.
+
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        editor.putString("Username", "Asutoshh");
+
+        // You have run this app once, and if you run this app again and you want to
+        // to modify the data for 'Username' above, just replace 'Asutosh' with the new value
+
+        editor.apply();
+
+    }
+
+
+    void getValues(){
+
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+
+        // the 2nd parameter below remains not assigned like that by default.
+        // Its how the developers at android OS team designed this method.
+
+        String name = sharedPref.getString("Username", "");
+
+        Toast.makeText(getApplicationContext(), name, Toast.LENGTH_LONG).show();
+
+    }
+
+
+}
+
+
+
+33. Quit an android app -
+
+System.exit(0);
+
+
+
+
+
+
+
+34. Setting App icon in ActionBar
+
+
+// Sets the App icon in the ActionBar
+ActionBar ab = getSupportActionBar();
+ab.setDisplayShowHomeEnabled(true);
+ab.setIcon(R.mipmap.ic_launcher);
+
+
+
+35. A common memory leak, android 'bitmap size exceeds VM budget' error doesn't happen from API 11 and higher
+      because android has improved mechanism to handle images on those 
+
+
+
+36. ListView onClick Listener code - 
+
+listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    public void onItemClick(AdapterView<?> parent, View view,
+                            int position, long id) {
+        // Do something here
+    }
+});
+
+
+
+37. Make Drawabale from image path -
+
+ String pathName = "/path/to/file/xxx.jpg"; 
+ Drawable d = Drawable.createFromPath(pathName);
+
+
+38. <hr> tag in android
+
+<View 
+   android:layout_width="fill_parent"
+   android:layout_height="2dp"       
+   android:background="#ffffff"/>
+
+
+
+39. Making an android layout scrollable -
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true"> <!--IMPORTANT otherwise backgrnd img. will not fill the whole screen -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:background="@drawable/background_image"
+    >
+
+    <!-- Bla Bla Bla i.e. Your Textviews/Buttons etc. -->
+    </RelativeLayout>
+</ScrollView>
+
+
+
+40. Button OnClick Listener -
+
+button4.setOnClickListener(new OnClickListener() {
+    @Override
+    public void onClick(View arg0) {
+        Intent intent = new Intent(context, FrontPage.class);
+        startActivity(intent);
+    }
+});
+
+Note : SetOnTouch Listener and OnClick Listener are 2 different things.
+
+
+
+41. Setting Custon font to Textview -
+
+txt1 = (TextView)findViewById(R.id.txt1);
+// this is the TextView that displays this time elapsed as points
+String fontPath = "fonts/SquadaOneRegular.ttf";
+// path to custom font on my android project directory
+Typeface tf = Typeface.createFromAsset(getAssets(), fontPath);
+// Loading Font Face
+txt1.setTypeface(tf);
+// Applying this custom font to 'txt1'
+// txt1 is a TextView
+
+
+
+42.  Get screen width -
+
+DisplayMetrics metrics = new DisplayMetrics();
+getWindowManager().getDefaultDisplay().getMetrics(metrics);
+final float calculatedWidth = metrics.widthPixels * 0.2f;
+// Gives 20% of screen width.
+// Gives the value of width in landscape mode since this app has been set to run in landscape mode.
+// In landscape mode, Width > Length.
+//We get the width as Double. We round it up to omit the decimal values to cast it as 'long'.
+
+
+
+
+
+
+43. Translate Animation - 
+
+Animation animation1 = new TranslateAnimation(-10, -5, 10, 5);
+
+// Time in milli seconds is 100 to complete the animation
+animation1.setDuration(100);
+
+animation1.setFillAfter(true);
+
+// You can change the 'number of cycles of animation' in the bracket. Now its set to infinite animation.
+animation1.setRepeatCount(Animation.INFINITE);
+
+// Set this to 'true' if you want to start the animation from where it has left in the previous cycle
+// Setting it to 'true', is only valid if  setRepeatCount is more than 1.
+animation1.setFillAfter(false);
+
+// carme is an ImageView
+carme.startAnimation(animation1);
+
+
+
+44. Getting height of a drawable that has been set as a background image in an ImageView - 
+ImageView carme = (ImageView)findViewById(R.id.carme);
+float height_of_car = carme.getDrawable().getIntrinsicHeight();
+
+
+
+45. Get Timestamp in Java - 
+The shortest is
+String secs = "" + System.currentTimeMillis() / 1000;
+
+If you want to retain milli-seconds you can use
+
+String secs = String.format("%.3f",  System.currentTimeMillis() / 1000.0);
+
+produces a String like
+
+1342604140.503
+
+
+
+46. Get Date and Time in Java -
+
+Calender c = Calendar.getInstance();
+sdf = new SimpleDateFormat("hh:mm a - dd MMMM, yyyy");
+strDate = sdf.format(c.getTime());
+
+
+47. Android full screen activity -
+
+Put in in manifests file in the block of that activity
+
+
+<activity android:name=".ActivityName"
+    android:label="@string/app_name"
+    android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+
+
+
+48. Make an Activity scrollable in android -
+
+in the xml file for the activity, put your Layout codes inside an ScrollView like this:
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+    <LinearLayout android:id="@+id/menu_ll"
+
+        android:layout_width="fill_parent" 
+         android:layout_height="fill_parent">
+         android:scrollbars="vertical"
+
+        </LinearLayout>
+
+</ScrollView>
+
+
+
+
+
+49. Class to pass JSON object to PHP server --
+
+
+public void postData(String url,JSONObject obj) {
+
+        // url is the URL of the php script and obj is the JSON object like this - {"CATALOGUEID", "3"}
+
+        HttpClient httpclient = new DefaultHttpClient();
+        HttpParams myParams = new BasicHttpParams();
+        HttpConnectionParams.setConnectionTimeout(myParams, 10000);
+        HttpConnectionParams.setSoTimeout(myParams, 10000);
+
+        String json = obj.toString();
+
+        try {
+
+            HttpPost httppost = new HttpPost(url.toString());
+            httppost.setHeader("Content-type", "application/json");
+
+            StringEntity se = new StringEntity(obj.toString());
+            se.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+            httppost.setEntity(se);
+
+            HttpResponse response = httpclient.execute(httppost);
+            String temp = EntityUtils.toString(response.getEntity());
+            Log.d("taggg", temp);
+
+
+        } catch (ClientProtocolException e) {
+
+        } catch (IOException e) {
+        }
+    }
+
+
+
+
+
+50. Using Picasso to display full screen images without stretching the image, ie maitaining the aspect ratio of the image --
+
+
+        The ImageView XML -->
+
+        <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/fullimage"
+        />
+
+
+        The Picasso Java code -->
+
+        Picasso.with(this).load(imageFull.get(0)).fit().centerInside().into(fullImage);
+
+
+
+
+
+
+51. OnLongClickListener --
+
+
+button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                // TODO Auto-generated method stub
+                return true;
+            }
+        });
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+52. Adding a TextView in java -
+
+RelativeLayout layoutt;
+
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+
+    layoutt = (RelativeLayout)findViewById(R.id.layoutt);
+
+    TextView dynamicTextView = new TextView(this);
+
+    dynamicTextView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+            RelativeLayout.LayoutParams.WRAP_CONTENT));
+
+    dynamicTextView.setText(" Hello World yoyo");
+
+    layoutt.addView(dynamicTextView);
+}
+
+53. Reading all rows for a column of Parse.com database and printing data to a ListView -
+
+List<ParseObject> ob;
+(put this outSide OnCreate, inside Main class that extends activity)
+
+
+listView = (ListView)findViewById(R.id.listView);
+
+ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+        android.R.layout.simple_list_item_1);
+//-------- <Reading data from parse.com database> ---------------------------
+
+        ParseQuery<ParseObject> query = new ParseQuery<ParseObject>(
+                "Obb1");
+         // Obb1 is the class name of the Parse.com database
+
+        query.orderByAscending("_created_at");
+        try {
+            ob = query.find();
+        } catch (ParseException e) {
+            Log.e("Error", e.getMessage());
+            e.printStackTrace();
+        }
+        for (ParseObject country : ob) {
+            adapter.add((String) country.get("Message"));
+
+             // Message is the Column name
+        }
+
+//-------- </Reading data from parse.com database> --------------------------
+
+        
+listView.setAdapter(adapter);
+
+listView.setOnItemClickListener(this);
+
+/* or OnClick functionality, write separate code inside -  
+// @Override
+public void onItemClick(AdapterView<?> parent, View view, int position, long id) {     }
+
+*/
+ 
+
+
+54.  Case of an Activty not showing ActionBar inspite of the theme having an ActionBar with it --
+
+For the main layout in the xml file of the activity, set
+
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+instead of
+
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+
+55.
+
+i -Displaying Toast Message on android Activity -
+
+Toast.makeText(getApplicationContext(), "this is my Toast message!!! =)",
+   Toast.LENGTH_LONG).show();
+
+
+ii – Displaying Toast Message on a fragment -
+
+Toast.makeText(getActivity(), "Text " + posn, Toast.LENGTH_LONG).show();
+
+
+
+
+
+
+56. Intent in android - 
+
+Intent i = new Intent(getApplicationContext(),MainActivity.class);
+startActivity(i);
+
+57. Check if an app is run for first time after installation - 
+
+Boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+        .getBoolean("isfirstrun", true);
+
+if (isFirstRun) {
+
+    getSharedPreferences("PREFERENCE", MODE_PRIVATE).edit()
+            .putBoolean("isfirstrun", false).commit();
+
+    // Do something here
+
+}
+
+
+
+
+
+58. 
+
+i - Shared Preferences to save data on Phone  in an Avtivity- 
+public class MainActivity extends Activity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        setValues();
+        getValues();
+
+    }
+
+
+    void setValues(){
+
+        // 'userInfo' is the name of this SharedPreference.
+        //  Using this name you save data and retrieve data from this same SharedPreference.
+
+        SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        editor.putString("Username", "Asutoshh");
+
+        // You have run this app once, and if you run this app again and you want to
+        // to modify the data for 'Username' above, just replace 'Asutosh' with the new value
+
+        editor.apply();
+
+    }
+
+
+    void getValues(){
+
+        SharedPreferences sharedPref = getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+
+        // the 2nd parameter below remains not assigned like that by default.
+        // Its how the developers at android OS team designed this method.
+
+        String name = sharedPref.getString("Username", "");
+
+        Toast.makeText(getApplicationContext(), name, Toast.LENGTH_LONG).show();
+
+    }
+
+
+}
+
+i i - Shared Preferences to save data on Phone in a Fragment - 
+public class MainActivity extends Activity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        setValues();
+        getValues();
+
+    }
+
+
+    void setValues(){
+
+        // 'userInfo' is the name of this SharedPreference.
+        //  Using this name you save data and retrieve data from this same SharedPreference.
+
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+
+        SharedPreferences.Editor editor = sharedPref.edit();
+
+        editor.putString("Username", "Asutoshh");
+
+        // You have run this app once, and if you run this app again and you want to
+        // to modify the data for 'Username' above, just replace 'Asutosh' with the new value
+
+        editor.apply();
+
+    }
+
+
+    void getValues(){
+
+        SharedPreferences sharedPref = getActivity().getSharedPreferences("userInfo", Context.MODE_PRIVATE);
+
+        // the 2nd parameter below remains not assigned like that by default.
+        // Its how the developers at android OS team designed this method.
+
+        String name = sharedPref.getString("Username", "");
+
+        Toast.makeText(getApplicationContext(), name, Toast.LENGTH_LONG).show();
+
+    }
+
+
+}
+
+
+
+59. Quit an android app -
+
+System.exit(0);
+
+
+
+
+
+
+
+60. Setting App icon in ActionBar
+
+
+// Sets the App icon in the ActionBar
+ActionBar ab = getSupportActionBar();
+ab.setDisplayShowHomeEnabled(true);
+ab.setIcon(R.mipmap.ic_launcher);
+
+
+
+61. A common memory leak, android 'bitmap size exceeds VM budget' error doesn't happen from API 11 and higher
+      because android has improved mechanism to handle images on those 
+
+
+
+62. ListView onClick Listener code - 
+
+listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    public void onItemClick(AdapterView<?> parent, View view,
+                            int position, long id) {
+        // Do something here
+    }
+});
+
+
+
+63. Make Drawabale from image path -
+
+ String pathName = "/path/to/file/xxx.jpg"; 
+ Drawable d = Drawable.createFromPath(pathName);
+
+
+64. <hr> tag in android
+
+<View 
+   android:layout_width="fill_parent"
+   android:layout_height="2dp"       
+   android:background="#ffffff"/>
+
+
+
+65. Making an android layout scrollable -
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true"> <!--IMPORTANT otherwise backgrnd img. will not fill the whole screen -->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:background="@drawable/background_image"
+    >
+
+    <!-- Bla Bla Bla i.e. Your Textviews/Buttons etc. -->
+    </RelativeLayout>
+</ScrollView>
+
+
+
+66. Button OnClick Listener -
+
+button4.setOnClickListener(new OnClickListener() {
+    @Override
+    public void onClick(View arg0) {
+        Intent intent = new Intent(context, FrontPage.class);
+        startActivity(intent);
+    }
+});
+
+Note : SetOnTouch Listener and OnClick Listener are 2 different things.
+
+
+
+67. Setting Custon font to Textview -
+
+txt1 = (TextView)findViewById(R.id.txt1);
+// this is the TextView that displays this time elapsed as points
+String fontPath = "fonts/SquadaOneRegular.ttf";
+// path to custom font on my android project directory
+Typeface tf = Typeface.createFromAsset(getAssets(), fontPath);
+// Loading Font Face
+txt1.setTypeface(tf);
+// Applying this custom font to 'txt1'
+// txt1 is a TextView
+
+
+
+68.  Get screen width -
+
+DisplayMetrics metrics = new DisplayMetrics();
+getWindowManager().getDefaultDisplay().getMetrics(metrics);
+final float calculatedWidth = metrics.widthPixels * 0.2f;
+// Gives 20% of screen width.
+// Gives the value of width in landscape mode since this app has been set to run in landscape mode.
+// In landscape mode, Width > Length.
+//We get the width as Double. We round it up to omit the decimal values to cast it as 'long'.
+
+
+
+
+
+
+69. Translate Animation - 
+
+Animation animation1 = new TranslateAnimation(-10, -5, 10, 5);
+
+// Time in milli seconds is 100 to complete the animation
+animation1.setDuration(100);
+
+animation1.setFillAfter(true);
+
+// You can change the 'number of cycles of animation' in the bracket. Now its set to infinite animation.
+animation1.setRepeatCount(Animation.INFINITE);
+
+// Set this to 'true' if you want to start the animation from where it has left in the previous cycle
+// Setting it to 'true', is only valid if  setRepeatCount is more than 1.
+animation1.setFillAfter(false);
+
+// carme is an ImageView
+carme.startAnimation(animation1);
+
+
+70. Getting height of a drawable that has been set as a background image in an ImageView - 
+ImageView carme = (ImageView)findViewById(R.id.carme);
+float height_of_car = carme.getDrawable().getIntrinsicHeight();
+
+
+71. Get Timestamp in Java - 
+The shortest is
+String secs = "" + System.currentTimeMillis() / 1000;
+
+If you want to retain milli-seconds you can use
+
+String secs = String.format("%.3f",  System.currentTimeMillis() / 1000.0);
+
+produces a String like
+
+1342604140.503
+
+
+72. Get Date and Time in Java -
+
+Calender c = Calendar.getInstance();
+sdf = new SimpleDateFormat("hh:mm a - dd MMMM, yyyy");
+strDate = sdf.format(c.getTime());
+
+
+73. Android full screen activity -
+
+Put in in manifests file in the block of that activity
+
+
+<activity android:name=".ActivityName"
+    android:label="@string/app_name"
+    android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+
+
+
+74. Make an Activity scrollable in android -
+
+in the xml file for the activity, put your Layout codes inside an ScrollView like this:
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="fill_parent">
+
+    <LinearLayout android:id="@+id/menu_ll"
+
+        android:layout_width="fill_parent" 
+         android:layout_height="fill_parent">
+         android:scrollbars="vertical"
+
+        </LinearLayout>
+
+</ScrollView>
+
+
+
+75. Finish Activity from Fragment -
+
+    getActivity.finish();
+
+
+
+
+76. Accessing files stored inside 'assets' folder inside our app --
+
+
+
+ i. Place the file inside assets folder. The 'assets' folder should be inside 'src/main'. 
+    
+    'ourFile.html' path is   -- >  src/main/assets/ourFile.html
+
+
+ ii. Access the file using Java code as --> android_asset/ourFile.html
+
+
+    Example --
+
+
+        MySite = (WebView) findViewById(R.id.MySite);
+        MySite.getSettings().setJavaScriptEnabled(true);
+        MySite.setWebViewClient(new WebViewClient());
+
+        MySite.loadUrl("file:///android_asset/ourFile.html");
+
+
+
+
+77.  Make bitmap from image path on mobile --
+
+        Bitmap bm = BitmapFactory.decodeFile(mCurrentPhotoPath);
+        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 50, bao);
+
+
+
+78. Hiding soft keyboard. the soft keyboard will appear only when you click on an EditText and not by default on onCreate —- 
+
+In manifest file, add this with the activity declaration —
+
+  android:windowSoftInputMode="stateHidden"
+ 
+
+    like this -
+
+     <activity
+            android:name=".ui.DealerByNameActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            >
+
+
+
+
+
+79. Solving grade error on compiling even after multiDexEnabled' was set to 'true' —>
+
+
+
+        an error was popping up while compiling even when  'multiDexEnabled' was set to 'true'
+
+        to correct that, what we did is -->
+
+        i. added
+
+        multiDexEnabled true
+
+            inside defaultConfig { } in app gradle
+
+        ii. added
+
+        dexOptions {
+        preDexLibraries = false
+         }
+
+             inside android { } in app gradle
+
+        ii. added
+
+        android:name="android.support.multidex.MultiDexApplication"
+
+             inside application tag in manifest.
+
+
+
+
+80. Rotating image captured from camera as per landscape or portrait mode in camera (using exif data to set the rotation) — >
+
+
+mImageView.setImageBitmap(bitmap);
+        ExifInterface exif = null;
+        try {
+            exif = new ExifInterface(mCurrentPhotoPath);
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+            mImageView.setRotation(orientation);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+81. Setting EditText to editable and non-editable —
+
+
+    make EditText editable (default behavior) ->
+
+    editText.setEnabled(false);
+
+
+    make EditText non editable ->
+
+    editText.setEnabled(true);
+
+
+
+
+82. Alert Dialog with centered message (the title is not centered) —-
+
+
+// the function
+
+public void alertEdit(String msg) {
+
+        AlertDialog.Builder alertDialogBuilder = 
+           new AlertDialog.Builder(StockDetailsWithOfflineActivity.this);
+
+        alertDialogBuilder.setTitle("Success");
+        alertDialogBuilder.setMessage(msg);
+
+        alertDialogBuilder.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                        MyApplication.stockEditedStatus = true;
+                        Intent in = new Intent(getBaseContext(), StockActivity.class);
+                        startActivity(in);
+
+                    }
+                });
+        
+
+        AlertDialog dialog = alertDialogBuilder.show();
+        TextView messageText = (TextView)dialog.findViewById(android.R.id.message);
+        messageText.setGravity(Gravity.CENTER);
+        dialog.show();
+    }
+
+
+
+
+83. Get IMEI number of phone —- 
+
+
+        Add this permission in manifest - 
+
+
+        <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+
+
+        Java code for getting IMEI number-
+
+
+        TelephonyManager mngr = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+        String imei = mngr.getDeviceId();
+
+
+
+
+84. Convert Bitmap to File —-
+
+      File file = new File("path");
+      OutputStream os = new BufferedOutputStream(new FileOutputStream(file));
+      bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+      os.close();
+        
+
+
+
+85. Based on Exif data, sometimes you need to rotate an image before sending it to server.
+
+    Rotate image taken from phone gallery as a bitmap and save the bitmap to a file to be sent to server —-
+
+           
+           // get exif data and orientation about the image
+       
+           try {
+                ei = new ExifInterface(path_of_image_on_phone);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+
+            String photopath = path_of_image_on_phone;
+            Bitmap bmp = BitmapFactory.decodeFile(photopath);
+
+            Matrix matrix = new Matrix();
+             
+            // search online for other orientation values to check for
+            // here I’m checking if the image is rotated 90 left side and rotting it back by 90 degree
+
+            if(orientation == 6){
+                matrix.postRotate(90);
+            }
+            
+ 
+            // saving the rotated bitmap back to the file we need to send to server
+
+            bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
+
+            FileOutputStream fOut;
+            try {
+                fOut = new FileOutputStream(new File(photopath));
+                bmp.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
+                fOut.flush();
+                fOut.close();
+
+            } catch (FileNotFoundException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            // add the rotated file to multipart entity to be sent to server.
+            // the rotation here doesn’t change the rotation of the original image on phone.
+            // after rotation we save it to another file saved somewhere on phone which we upload to server
+
+            entityBuilder.addBinaryBody("Image"+k, new File(photopath));
+
+
+
+86. Get Exif data and photo orientation —
+
+       
+           try {
+                ei = new ExifInterface(path_of_image_on_phone);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+
+
+
+87. Runnable —
+
+        /* runnable runs on the main thread. It is put in queue by the main thread and is executed as soon as everything written
+           above it has been executed. */
+
+        Handler handler = new Handler();
+        Runnable r;
+
+        r = new Runnable() {
+            public void run() {
+                // your code here
+            }
+        };
+        
+        // run the Runnable r after 10 seconds 
+        handler.postDelayed(r, 10000);
+
+
+
+
+88. Getting lattitude and longitude from pincode - 
+
+
+GPSTracker tracker = new GPSTracker(HomeActivity.this);
+            if (tracker.canGetLocation()) {
+
+                final Geocoder geocoder = new Geocoder(this);
+                // final String zip = "90210";
+                try {
+                    List<Address> addresses = geocoder.getFromLocationName(stringPostalCode, 1);
+                    if (addresses != null && !addresses.isEmpty()) {
+                        Address address = addresses.get(0);
+                        // Use the address as needed
+                        String message = String.format("Latitude: %f, Longitude: %f",
+                                address.getLatitude(), address.getLongitude());
+                        stringLatitude = String.valueOf(address.getLatitude());
+                        stringLongitude = String.valueOf(address.getLongitude());
+                        //Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+                    } else {
+                        // Display appropriate message when Geocoder services are not available
+                        //Toast.makeText(this, "Unable to geocode zipcode", Toast.LENGTH_LONG).show();
+                    }
+                } catch (IOException e) {
+                    // handle exception
+                }
+
+
+
+
+89. Adding style to one Activity separately in manifest —
+
+
+// This will add the declared style to this one particular Activity and not the whole app
+// Add this in manifest in the place of Declaration of the activity
+
+            <activity android:name="com.yongchun.library.view.ImageSelectorActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+
+
+
+
+90. Changing ‘Next’ button in Keypad to ‘Done’ when cursor is on an EditText —
+
+
+    Put this is the EditText XML code —>
+  
+
+    android:imeOptions="actionDone"
+
+
+
+91. Method to generate Key Hashes for use of Facebook SDK in android — 
+
+
+    1. 1st generate a debug key using a system. Copy paste the debug key in the Facebook     developers console where you need to enter key hashes.
+
+    2. Then generate a release key using the same system from where you generated the debug hey. Note the alias in the release key should be same as the one in debug key. And path is as mentioned in the code below. For windows replace %HOMEPATH% with your keystone home path.
+————————————————————————————————————————————————————————————————————————
+
+code to generate a debug key on mac - 
+
+keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | openssl sha1 -binary | openssl base64
+
+code to generate a release key on mac - 
+
+keytool -exportcert -alias androiddebugkey -keystore ~/.android/release.keystore | openssl sha1 -binary | openssl base64
+
+
+you can name your alias anything but note that the alias are same in both release and debug key.
+
+————————————————————————————————————————————————————————————————————————
+
+code to generate a debug key on windows —
+
+keytool -exportcert -alias androiddebugkey -keystore %HOMEPATH%\.android\debug.keystore | openssl sha1 -binary | openssl base64
+
+code to generate a release key on windows —
+
+keytool -exportcert -alias androiddebugkey -keystore %HOMEPATH%\.android\debug.keystore | openssl sha1 -binary | openssl base64
+
+
+you can name your alias anything but note that the alias are same in both release and debug key.
+
+————————————————————————————————————————————————————————————————————————
+
+
+important —>  the command line keyhole will generate a release key even if the credentials are wrong but this generate key will not work once copy pasted in the developers console. so make sure to enter correct credentials.    
+
+
+
+
+92. Converting Bitmap to byte array —
+
+            // converting to byte array
+            // For converting the bitmap to byte array, we need this ByteArrayOutputStream
+           
+            byte[] imageByteArray;
+            ByteArrayOutputStream bStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bStream);
+            imageByteArray = bStream.toByteArray();
+
+
+
+
+93. Passing Image as byte array in Intent —-
+
+                    Intent frameIntent = new Intent(ActivityFrame.this, SingleTemplateActivity.class);
+                    frameIntent.putExtra("FrameBitmap", byteArray);
+                    frameIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(frameIntent); 
+
+
+
+
+94. Making Bitmap from image URL — 
+
+        /* 
+ 
+         note -> 
+
+            the format the URL that your are passing should be like shown below.
+            
+            For some reasons I got ‘java.io.FileNotFoundException error’
+            where I passed URLs like 
+            ‘www.i.stack.imgur.com’,
+            ‘https://snapcard.in/profile/016e66261dd699737de4bda70754ca9f.jpg'
+
+        */
+        
+
+        String imageURL = “http://i.stack.imgur.com/QipEr.png”;
+
+        try {
+            is = new URL(imageURL).openStream();
+            Bitmap b1 = BitmapFactory.decodeStream(is);
+            handleLoadedBitmap(b1);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+95. Path of the ‘Download’ folder on device -- 
+
+    String downloadFolderPath = 
+      Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) ;
+
+
+
+
+95 - ii —  Path of SD Card root on device —
+
+       String path = Environment.getExternalStorageDirectory();
+
+
+
+
+
+96. Path of any Folder on device like DCIM, Documents, Pictures, etc —- 
+
+     String path = 
+      (Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_… ;
+
+    /* 
+           ‘…’ in the above code means that android studio autocomplete 
+           will show options once your code reaches _
+    */
+
+
+
+
+97. Path of ‘file’ directory in your app package folder on device - 
+
+    String path = context.getFilesDir();
+
+    // the output value of the above will be —> /data/data/com.adaptiz.snapcard/files
+
+
+
+
+
+98. Sharing intent - Intent for showing a dialog box containing list of apps to choose from to send some data from the app to share in some outside app —
+
+
+This code is for opening Intent options for Sharing something or sending something like we have the share options on Dealers Club app where it will open a dialog box having options of apps to choose from to share the download link for the app or when we are to send an email in Snapcard app - 
+
+     Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+     sharingIntent.setType("text/plain");
+     sharingIntent.putExtra(Intent.EXTRA_SUBJECT, “your message heading here“);
+     sharingIntent.putExtra(Intent.EXTRA_TEXT, “your message text here”);
+     startActivity(Intent.createChooser(sharingIntent, "Share via"));
+
+
+
+
+
+99. Opening Google play store link of an app (Intent to Play store link of an app) —-
+
+
+         // This will open the app on Google play app on device
+
+         startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse ("market://details?id=" +            
+         appPackageName)));
+
+
+
+100. Runnable Run on UI thread - 
+
+       // runs on UI thread
+       // useful when want to run something on UI thread from any background thread
+
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                           
+                          // your code here
+  
+                        }
+                    });
+
+
+101. 
+
+mAdapter.notifyDataSetChanged() 
+
+should always be called from the thread where adapter is set. Like in my case I always set it on UI/main thread. So I call mAdapter.notifyDataSetChanged() from UI/main thread. 
+
+If I’m in a background thread, I call it inside the code given in 100 above.
+
+
+
+102. Showing ‘NEXT’ or ‘DONE’ button on soft keypad — 
+
+     Add this to your EditText or AutoCompleteTextView in XML -
+
+                android:singleLine="true"
+                android:imeOptions="actionDone"
+
+                or
+
+                android:singleLine="true"
+                android:imeOptions="actionNext"
+
+
+
+103. Move from one EditText or AutoCompleteTextView  
+     to Next EditText or AutoCompleteTextView on pressing NEXT on soft keypad - 
+
+     put this to your EditText or AutoCompleteTextView in XML - 
+
+     
+        android:nextFocusDown="@+id/business_type"
+
+ where, business_type is the id of the next EditText or AutoCompleteTextView 
+
+
+
+
+104. AsyncTask parameters - What are the 3 parameters for in an AsyncTask —>
+
+   
+     public class GetProfileDetails extends AsyncTask<String, String, String> { … }
+
+
+The 3 parameters above, the first 2 ‘String’ is the type of data for params that                 we pass to an AsyncTask from main thread while calling the AsyncTask. Basically you
+can pass 2 params.
+
+        The 3rd ‘String ’parameter is the type of data that you pass from ‘doInBackground’ to ’onPostExecute’ inside the AsyncTask using the return on ‘doInBackground’.
+
+
+So types of AsyncTask based on parameters we pass - 
+
+   i. public class GetProfileDetails extends AsyncTask<Void, Void, String> { … }
+
+   ii. public class GetProfileDetails extends AsyncTask<String, Void, String> { … }
+
+   iii. public class GetProfileDetails extends AsyncTask<Void, String, String> { … }
+
+   iv. public class GetProfileDetails extends AsyncTask<String, String, String> { … }
+
+   
+ 
+ -> If you don’t want to pass anything to onPostExecute, ‘return null’ on doInBackground
+
+
+
+   
+105. Make an EditText not take any input or must not initiate showing up of keyboard on touch or click -- 
+
+    editText.setFocusable(false);
+    editText.setClickable(false); // disables events like copy pasting on touch
+
+
+ To make an EditText editable again after it was non editable - 
+
+   editText.setFocusableInTouchMode(true);
+   editText.setClickable(true); // enables events like copy pasting on touch
+
+
+
+
+106. Make an EditText and all the text in it, lighter in color and non-clickable so that it looks like that component is inactive - 
+
+    editText.setEnabled(false);
+
+
+
+
+107. setOnClickListener as switch case (ideally used when you have a lot of View and you    need to get id of the View that is selected for further operations) —
+
+
+
+        width = (TextView)findViewById(R.id.width);
+        reed = (TextView)findViewById(R.id.reed);
+        pick = (TextView)findViewById(R.id.pick);
+        warp = (TextView)findViewById(R.id.warp);
+        weft = (TextView)findViewById(R.id.weft);
+        weave = (TextView)findViewById(R.id.weave);
+        weight = (TextView)findViewById(R.id.weight);
+
+
+        View.OnClickListener listener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+
+                    case R.id.width:
+                    {
+                        Log.i("selct", "width");
+                    }
+                        break;
+
+                    case R.id.reed:
+
+                    {
+                        Log.i("selct", "reed");
+                    }
+
+                        break;
+
+                    case R.id.pick:
+
+                        break;
+
+                    case R.id.warp:
+
+                        break;
+
+                    case R.id.weft:
+
+                        break;
+
+                    case R.id.weave:
+
+                        break;
+
+                    case R.id.weight:
+
+                        break;
+
+                }
+            }
+        };
+
+        width.setOnClickListener(listener);
+        reed.setOnClickListener(listener);
+        pick.setOnClickListener(listener);
+        warp.setOnClickListener(listener);
+        weft.setOnClickListener(listener);
+        weave.setOnClickListener(listener);
+        weight.setOnClickListener(listener);
+
+
+
+
+
+108. Passing data using putString from Activity to Fragment ——
+
+
+     i. In your Activity, set the data to bundle and load the Fragment in a FrameLayout —                     
+
+                      
+                        // set data to bundle
+                        Bundle bundle = new Bundle();
+                        bundle.putString(“thekey“, “”some text”);
+
+                        // add the bundle to the fragment
+                        Fragment newFragment = new FilterFabric1st2nd3rd();
+                        newFragment.setArguments(bundle);
+
+                        // load the fragment
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        ft.add(R.id.loadFragment, newFragment).commit();
+
+
+
+     ii. In your fragment, catch the passed data —-
+
+
+           put in the topmost line inside onCreateView of your fragment - 
+
+
+
+              String dataGotFromActivity = getArguments().getString("thekey");
+
+
+
+
+
+
+109. Making dynamic table layout with rows and columns numbered from 1 to 200 - 
+
+
+
+i. put this in drawable folder —>
+
+
+    cell_shape.xml -
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape= "rectangle"  >
+    <solid android:color="#fff"/>
+    <stroke android:width="1dp"  android:color="#b2b1b1"/>
+</shape>
+
+
+
+
+ii. put this in your XML layout for your activity or fragment —>
+
+
+    <TableLayout
+        android:id="@+id/tableLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp"
+        android:shrinkColumns="*"
+        android:stretchColumns="*" >
+    </TableLayout>
+
+
+
+
+iii. declare these two functions outside your onCreate in Activity or outside your onCreateView in fragment —>
+
+
+
+private void BuildTable(int rows, int cols) {
+
+        int number_to_show = 1;
+
+        // outer for loop
+        for (int i = 1; i <= rows; i++) {
+
+            TableRow row = new TableRow(getActivity().getBaseContext());
+            row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
+                    TableRow.LayoutParams.WRAP_CONTENT));
+
+
+            // inner for loop
+            for (int j = 1; j <= cols; j++) {
+
+                TextView tv = new TextView(getActivity().getBaseContext());
+                tv.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
+                        TableRow.LayoutParams.WRAP_CONTENT));
+                tv.setBackgroundResource(R.drawable.cell_shape);
+                tv.setGravity(Gravity.CENTER);
+                int height = (int) dpToPx(50.0);
+                tv.setHeight(height);
+
+                tv.setText(""+number_to_show);
+                tv.setTextColor(Color.parseColor("#000000"));
+
+                row.addView(tv);
+
+                number_to_show++;
+
+            }
+
+            table_layout.addView(row);
+
+        }
+    }
+
+    
+
+
+    public long dpToPx(Double dp) {
+
+        
+float density = getActivity().getApplicationContext().getResources().getDisplayMetrics().density;
+        return Math.round((Double)dp * density);
+
+/* 
+
+if its a fragment, use this code instead of the above one - 
+
+float density = getActivity().getApplicationContext().getResources().getDisplayMetrics().density;
+        return Math.round((Double)dp * density);
+
+*/
+
+
+    }
+
+
+
+
+iv. put this inside onCreate or onCreateView —>
+
+
+            table_layout = (TableLayout)rootview.findViewById(R.id.tableLayout1);
+
+            table_layout.removeAllViews();
+            
+            // this will create a table with 50 rows and 4 columns.
+            // change these values to change number of rows and columns.
+            BuildTable(50, 4);
+       
+
+
+
+
+110. Load a fragment in a dialog box (DialogFragment) ——
+
+
+     To load a fragment in a dialog, we will use a DialogFragment —
+
+
+
+
+i. make an XML for layout of the fragment. let the XML be ‘number_table_dialog.xml’.
+
+
+
+ii. The Fragment class in Java —
+
+
+
+      FilterNumberTableDialog.java (change the package and class name with yours) ->
+
+
+
+package com.fabric.app.fragment;
+
+import android.app.DialogFragment;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+
+import com.fabric.app.R;
+
+public class FilterNumberTableDialog extends DialogFragment {
+    
+
+    public static FilterNumberTableDialog newInstance() {
+        FilterNumberTableDialog filterNumberTableDialog = new FilterNumberTableDialog();
+
+
+        return filterNumberTableDialog;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+
+        View view = inflater.inflate(R.layout.number_table_dialog, null);
+        
+
+        return view;
+    }
+    
+
+}
+
+
+
+
+iii. To show the DialogFragment, in your Activity, call it like this - 
+
+
+ FilterNumberTableDialog yourDialogFragment = FilterNumberTableDialog.newInstance();
+ yourDialogFragment.show(getFragmentManager().beginTransaction(), null);
+
+// in DialogFragment, there is no need of a FrameLayout to show a fragment in place of it
+
+
+
+
+
+
+
+111. Tanishq like App bar animation (app bar getting visible or invisible with translate animation) —-
+
+
+   i. declare outside onCreate —
+
+
+     Boolean toggleTopBar;
+
+
+
+
+   ii. Set toggleTopBar to false on onCreate (when the activity loads, its set to false) —
+
+
+     toggleTopBar = false;
+
+      
+
+
+   iii. put this code inside some event listener like onClickListener for the animation —
+
+
+                       if (toggleTopBar == false) {
+
+                                thumbnailButtons.animate()
+                                        .translationY(-200)
+                                        .setDuration(1000)
+                                        .start();
+                                toggleTopBar = true;
+                            } else if (toggleTopBar == true) {
+
+                                thumbnailButtons.animate()
+                                        .translationY(0)
+                                        .setDuration(1000)
+                                        .start();
+                                toggleTopBar = false;
+                        }
+
+
+
+
+
+
+
+112. Get size of a File in bytes or MB —-
+
+
+            // make a file from an image saved in Gallery        
+            File f = new File(String.valueOf(imageUri));
+
+            // size in bytes        
+            long size = f.length();
+            Log.i("sizeINbytes”, size+"");
+
+            // size in KB
+            size = size/1024;
+            Log.i("sizeInKB", size+"");
+
+            // size in MB
+            size = size/1024;
+            Log.i("sizeInMB", size+""); 
+
+
+
+
+
+113. intent from activity of one app to an activity of another app —
+
+
+    i. In the first activity where you want the intent from, add this code —
+
+                Intent intent = 
+                new Intent("com.adaptiz.snapcard.activity.Intent_From_Inner_module");
+                intent.putExtra("editedImage", ""+imageUri);
+                startActivity(intent);
+
+
+   ii. In the second activity where you want the intent to, add this in that app’s manifest where you have declared that activity inside <activity> </activity> —-
+
+            <intent-filter>
+             <action android:name="com.adaptiz.snapcard.activity.Intent_From_Inner_module" />
+             <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+
+// note:: this tag that I have given above “com.adaptiz.snapcard.activity.Intent_From_Inner_module”, you can
+          change whatever if followed by the package name.
+
+
+
+
+
+
+
+114. Sorting an ArrayList of any model type —
+
+
+
+i. Sorting in Ascending order —
+
+
+I have an ArrayList called ‘viewAdsDetailsList’ of a model class type ‘ViewAds’.
+I want to sort the ‘price’ field of the ArrayList in ascending order and thereby the whole ArrayList should be sorted as per increasing ‘price’.
+
+
+static public void sortYarnByPriceAscending()
+    {
+        Collections.sort(viewAdsDetailsList, new Comparator<ViewAds>() {
+            @Override
+            public int compare(ViewAds lhs, ViewAds rhs) {
+
+                Float id1 = Float.valueOf(lhs.getPrice());
+
+                Float id2 = Float.valueOf(rhs.getPrice());
+
+                // sort in ascending order
+                return id1.compareTo(id2);
+            }
+
+        });
+    }
+
+
+/* When you call this function, the original ArrayList would be sorted and you get the sorted ArrayList the next time you use it. */
+
+
+
+
+ii. sorting in descending order —
+
+
+I have an ArrayList called ‘viewAdsDetailsList’ of a model type ‘ViewAds’.
+I want to sort the ‘price’ field of the ArrayList in descending order and thereby the whole ArrayList should be sorted as per decreasing ‘price’.
+
+
+    static public void sortYarnByPriceDescending()
+    {
+        Collections.sort(viewAdsDetailsList, new Comparator<ViewAds>() {
+            @Override
+            public int compare(ViewAds lhs, ViewAds rhs) {
+
+                Float id1 = Float.valueOf(lhs.getPrice());
+
+                Float id2 = Float.valueOf(rhs.getPrice());
+
+                // just change this for sort it in descending order
+                return id2.compareTo(id1);
+            }
+
+        });
+    }
+
+
+/* When you call this function, the original ArrayList would be sorted and you get the sorted ArrayList the next time you use it. */
+
+
+
+
+
+
+115. Check if RecyclerView has scrolled to bottom most item while scrolling vertically —
+
+
+i. put this outside onCreate —
+
+
+    // for recyclerview scrolling and checking if bottom has reached
+    LinearLayoutManager layoutManager;
+    private boolean loading = true;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
+
+
+
+ii. put this inside onCreate - 
+
+
+
+layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
+        recyclerView = (RecyclerView)rootview.findViewById(R.id.weaving_recyclerView);
+        recyclerView.setLayoutManager(layoutManager);
+
+        
+// change the adapter with your adapter
+WeavingAdapter adapter=new WeavingAdapter(ViewAdsCollection.getWeavingAdsDetailsAsArray());
+        // Log.i("vieweadsarray", ViewAdsCollection.viewAdsDetailsList.get(0) + "");
+
+        recyclerView.setAdapter(adapter);
+
+
+
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+
+                visibleItemCount = layoutManager.getChildCount();
+                Log.i("visibleitemcount", ""+visibleItemCount);
+
+                if (dy > 0) //check for scroll down
+                {
+                    Log.i("visibleitemcount", ""+visibleItemCount);
+
+                    totalItemCount = layoutManager.getItemCount();
+                    pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
+
+                    if (loading) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            loading = false;
+                            Log.i("llast", "Last Item Wow !");
+                            //Last item of recyclerview has reached. Do pagination.. i.e. fetch new data
+                            sendRequest(pageno);
+
+
+                        }
+                    }
+                }
+            }
+        });
+
+
+
+
+
+
+
+
+
+116. Make ScrollView scroll to bottom in java code —
+
+
+      // scrollView is a ScrollView in the XML layout
+      scrollView.fullScroll(View.FOCUS_DOWN);
+
+
+
+
+
+
+
+117. Set the color of text in TextView in java code —
+
+        textView.setTextColor(Color.parseColor("#5ba156"));
+
+
+
+
+
+118. Passing a Model object in Intent PutExtra — 
+
+
+
+      Sometimes we need to send a Model object in Intent.PutExtra. 
+      It can be done like - 
+
+
+
+   i. the Model class should implement Serializable.
+
+       eg - 
+
+public class Person implements Serializable //Added implements Serializable
+{ …
+}
+
+
+   ii. For send Intent Data —
+
+                Intent intent = new Intent(context, MusicDetailsActivity.class);
+                Bundle args = new Bundle();
+
+                // music_list is of type model MusicList
+                args.putSerializable("ARRAYLIST", (Serializable) music_list);
+                intent.putExtra("BUNDLE", args);
+                context.startActivity(intent);
+
+
+
+   iii. For getting the data in the next activity — 
+
+
+        Intent intent = getIntent();
+        Bundle args = intent.getBundleExtra("BUNDLE");
+
+        // music_list is of type model MusicList
+        music_list = (ArrayList<MusicModel>) args.getSerializable("ARRAYLIST");
+
+
+
+
+
+119. Text Watcher example for an EditText - 
+
+
+
+i. put this function outside onCreate —
+
+
+
+private final TextWatcher watcher3 = new TextWatcher() {
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        public void afterTextChanged(Editable s) {
+            if (s.length() == 0) {
+
+            } else{
+                MyApplication.pricePostFabric = mEdt_Price.getText().toString();
+            }
+        }
+    };
+
+
+
+ii. call the above function in onCreate — 
+
+
+    // ‘mEdt_Price’ is an editText
+    mEdt_Price.addTextChangedListener(watcher3);
+
+
+
+
+120. Custom AutoCompleteTextView adapter when AutoCompleteTextView Threshold is set to ‘0’—
+
+
+i. The Adapter —
+
+
+Variant_Drop_Adapter —>
+
+
+// the row layout for this AutoCompleteTextView contains two TextView that we can set from adapter
+
+public class Variant_Drop_Adapter extends ArrayAdapter {
+
+    Context context;
+    ArrayList<VariantDropModel> list = new ArrayList<VariantDropModel>();
+    public Variant_Drop_Adapter(Context context, int resource, ArrayList<VariantDropModel> list) {
+        super(context, resource, list);
+        this.context=context;
+        this.list=list;
+
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+
+        if (convertView==null)
+        {
+            convertView = LayoutInflater.from(context)
+                    .inflate(R.layout.variant_drop_row_item, parent, false);
+        }
+
+        VariantDropModel mo = list.get(position);
+
+        final TextView textView=(TextView)convertView.findViewById(R.id.variant_name);
+        textView.setText(mo.getVariant());
+
+        final TextView count=(TextView)convertView.findViewById(R.id.count);
+        count.setText(mo.getCount());
+
+
+
+
+        return convertView;
+    }
+
+}
+
+
+
+
+ii. The row layout —
+
+
+variant_drop_row_item.xml —>
+
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"    >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="#E7E7E7"
+        >
+    <TextView
+        android:id="@+id/variant_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:layout_centerVertical="true"
+        android:text="Yarn Dealer"/>
+    <TextView
+        android:id="@+id/count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        />
+    </RelativeLayout>
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#fff"/>
+</LinearLayout>
+
+
+
+
+iii. The model —
+
+
+VariantDropModel.java —>
+
+
+
+public class VariantDropModel {
+
+    String variant, count;
+
+    public String getVariant() {
+        return variant;
+    }
+
+    public void setVariant(String variant) {
+        this.variant = variant;
+    }
+
+    public String getCount() {
+        return count;
+    }
+
+    public void setCount(String count) {
+        this.count = count;
+    }
+}
+
+
+
+
+iv. Calling the adapter in the Activity where you have the AutoCompleteTextView —
+
+
+// versionBox is the AutoCompleteTextView
+
+versionBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                ArrayList<VariantDropModel> versionData = new ArrayList<VariantDropModel>();
+
+                for(int i = 0; i< versionCountList.size(); i++){
+                    if(versionCountList.get(i) != null){
+                        VariantDropModel mo = new VariantDropModel();
+ 
+                        // set the model data here that forms the individual items of the ArrayList of the model type
+                        mo.setVariant(versionList.get(i));
+                        mo.setCount(versionCountList.get(i));
+
+                        versionData.add(mo);
+                    }
+                }
+
+
+                Variant_Drop_Adapter adapterSearch =
+                        new Variant_Drop_Adapter(getBaseContext(), android.R.layout.simple_list_item_1, versionData);
+                versionBox.setAdapter(adapterSearch);
+                versionBox.setThreshold(0);
+                versionBox.showDropDown();
+            }
+        });
+
+
+
+
+
+121.  Show a newly downloaded Image in gallery —
+
+    By default when some new image is downloaded to your device in some location, 
+    the gallery app will not scan it to show in gallery. The automatic scanning by gallery    
+    occurs when the device is restarted or when the sd card is reinserted.
+
+    So to show the newly downloaded image in gallery, you need to tell the gallery app
+    to scan and show the file in gallery using code —
+
+
+
+/* 
+   If you are downloading the image file by creating a new folder via code,
+   this method will also show that folder in gallery and the downloaded image inside that 
+   folder in the gallery
+*/
+
+
+// file.getAbsolutePath() is the path of the newly downloaded file.
+// instead of file.getAbsolutePath(), you can give the full path of the file also.
+
+MediaScannerConnection.scanFile(context, new String[] { file.getAbsolutePath()},
+                null,
+                new MediaScannerConnection.OnScanCompletedListener() {
+                    @Override
+                    public void onScanCompleted(String path, Uri uri) {
+
+                    }
+                });
+
+
+
+
+
+122. Create a new folder in device via Java code in android —-
+
+
+     File folder = new File(Environment.getExternalStorageDirectory() + "/Dealers Club");
+            if(!folder.exists()){
+                folder.mkdirs();
+            }
+
+
+
+
+
+
+
+123. On Button click, make a class to a specified number —
+
+
+     // ‘img_call’ is an ImageView
+
+     img_call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                String no1 = "tel:" +"7090796876";
+                Log.d("no1", "" + no1);
+                callIntent.setData(Uri.parse(no1));
+                startActivity(callIntent);
+            }
+        });
+
+
+
+
+
+124. Allocate more resources to your project for faster compilation of the app—
+
+
+In build.grade (Module: app), put this line —-
+
+
+/* This code will allocate more resources like heap space to your project during compilation so that you can run projects whose size is too large and also it reduces the compilation time */
+
+
+dexOptions {
+      
+        incremental true
+        javaMaxHeapSize "4g"
+        // allocates more resource than below code
+    }
+
+
+    or
+
+
+dexOptions {
+      
+        incremental true
+        javaMaxHeapSize “2g"
+       
+    }
+
+
+
+
+
+125. In a TextView having some text, make links on some particular type of data inside the 
+     TextView text.
+
+
+
+  i.   Let us suppose, we need to make phone numbers underlined in a TextView text and clicking on those phone numbers, it should open an option consisting of apps like device’s default call dialer app or device’s default SMS app asking what to do with the phone number —
+
+add this to the TextView XML — android:autoLink="phone"
+
+eg - 
+
+<TextView
+        android:autoLink="phone"
+        android:id="@+id/textNotificationMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="19sp" />
+
+
+
+
+ii. The values that you can provide to TextView ’android:autoLink’ in XML are —
+
+
+phone, all, email, map, none, web
+
+
+
+
+
+126. Show hide password on checking CheckBox or clicking an eye image - 
+
+passwordEditView = (EditText) rootView.findViewById(R.id.password);
+final CheckBox showPasswordCheckBox = (CheckBox) rootView.findViewById(R.id.checkbox);
+showPasswordCheckBox.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View view) {
+        if (showPasswordCheckBox.isChecked()){
+            passwordEditView.setTransformationMethod(null);
+        }else{
+            passwordEditView.setTransformationMethod(new PasswordTransformationMethod());
+       }
+    }
+});
+
+
+
+
+127. Making an object of Activity class --
+
+NewRegister3 callingActivity = (NewRegister3) getActivity();
+
+/* if some method is there in activity, we can call that method in some other class using the above object 'callingActivity '. */
+
+
+
+
+
+128. Passing data from DialogFragment to Activity --
+
+
+
+i. in the DialogFragment add this --
+
+   /*
+      NewRegister3  is the Avtivity to where we are passing the value and 
+      is the Activity where that DialogFragment is called to show up
+   */
+   NewRegister3 callingActivity = (NewRegister3) getActivity();
+   callingActivity.onUserSelectValue("2");
+
+
+ii. In the Activity add this outside onCreate --
+
+    public void onUserSelectValue(String selectedValue) {
+        Log.i("thepassedvalue", selectedValue);
+    }
+
+
+ 
+
+
+
