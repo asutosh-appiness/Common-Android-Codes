@@ -1,4 +1,4 @@
-1. Getting screen Dp (for example my phone is 320dp * 480dp) --
+﻿1. Getting screen Dp (for example my phone is 320dp * 480dp) --
 
 
         DisplayMetrics displayMetrics = getBaseContext().getResources().getDisplayMetrics();
@@ -3194,6 +3194,58 @@ ii. In the Activity add this outside onCreate --
 
 
  
+
+129. RecyclerView Adapter class - 
+
+
+
+public class TagAdapter extends RecyclerView.Adapter<TagAdapter.Viewholder> {
+
+    ArrayList<TagsModel> TagsData;
+    TagsModel model;
+
+    public TagAdapter(ArrayList<TagsModel> tagsData) {
+        this.TagsData = tagsData;
+    }
+
+    public static class Viewholder extends RecyclerView.ViewHolder {
+
+        public TextView tagText;
+
+        public Viewholder(View itemView) {
+            super(itemView);
+
+            tagText = (TextView)itemView.findViewById(R.id.tag_text);
+        }
+    }
+
+    @Override
+    public Viewholder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.tags_row, parent, false);
+
+        return new Viewholder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(Viewholder holder, int position) {
+
+        model = TagsData.get(position);
+
+        if(holder.tagText != null){
+            holder.tagText.setText(model.getTagName());
+        }
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return TagsData.size();
+    }
+
+
+
+}
 
 
 
