@@ -3249,3 +3249,15 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.Viewholder> {
 
 
 
+
+130. All codes for RecyclerView - 
+
+https://guides.codepath.com/android/using-the-recyclerview
+
+
+131. All about AppBar - 
+
+http://www.androidhive.info/2013/11/android-working-with-action-bar/
+
+
+
