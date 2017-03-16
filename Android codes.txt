@@ -3261,3 +3261,17 @@ http://www.androidhive.info/2013/11/android-working-with-action-bar/
 
 
 
+132. 
+
+/**
+ * Read the WebView HTML and store in a Java variable
+ */
+mWebview.evaluateJavascript(
+ "(function() { return ('<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>'); })();",
+ new ValueCallback < String > () {
+  @Override
+  public void onReceiveValue(String html) {
+   Log.d("HTML", html);
+   // code here
+  }
+ });
