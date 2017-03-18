@@ -3275,3 +3275,19 @@ mWebview.evaluateJavascript(
    // code here
   }
  });
+ 
+ 
+ 
+ 
+ 133. Runnable in background thread - 
+ 
+     // By default the  'Runnable' runs in the UI thread when all the queued tasks ahead of it in UI thrad is over.
+     // But there is a way you can run 'Runnable' in a background thread by using this - 
+     
+     Android.os.Process.setThreadPriority(Android.os.Process.THREAD_PRIORITY_BACKGROUND);
+     
+     
+     
+     
+     
+     
