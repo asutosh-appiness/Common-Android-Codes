@@ -3333,9 +3333,5 @@ mWebview.evaluateJavascript(
         cursor.close();
 
 
-        MyApplication.doneRefering = true;
-        startActivity(new Intent(getApplicationContext(), Home.class));
-        mTitle = getString(R.string.refer_a_friend);
-
     }
      
