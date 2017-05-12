@@ -3290,4 +3290,52 @@ mWebview.evaluateJavascript(
      
      
      
+134. Get name, email and phone number of the selcted contact from contacts - 
+     
+     
+     protected void getContactInfo(Intent intent)
+    {
+
+        Cursor cursor =  managedQuery(intent.getData(), null, null, null, null);
+        while (cursor.moveToNext())
+        {
+            String contactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+            nameToSend = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME));
+
+            String hasPhone = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+
+            if ( hasPhone.equalsIgnoreCase("1"))
+                hasPhone = "true";
+            else
+                hasPhone = "false" ;
+
+            if (Boolean.parseBoolean(hasPhone))
+            {
+                Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ contactId,null, null);
+                while (phones.moveToNext())
+                {
+                    phoneNoToSend = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                }
+                phones.close();
+            }
+
+            // Find Email Addresses
+            Cursor emails = getContentResolver().query(ContactsContract.CommonDataKinds.Email.CONTENT_URI,null,ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = " + contactId,null, null);
+            while (emails.moveToNext())
+            {
+                emailToSend = emails.getString(emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+
+            }
+            emails.close();
+
+             //address.moveToNext()
+        }  //while (cursor.moveToNext())
+        cursor.close();
+
+
+        MyApplication.doneRefering = true;
+        startActivity(new Intent(getApplicationContext(), Home.class));
+        mTitle = getString(R.string.refer_a_friend);
+
+    }
      
