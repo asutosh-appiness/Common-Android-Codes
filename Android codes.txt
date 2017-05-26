@@ -3335,3 +3335,37 @@ mWebview.evaluateJavascript(
 
     }
      
+     
+     
+     
+135. Android add an actionbar when the activity extends AppCompatActivity - 
+
+     i place this in onCreate - 
+     
+        // sets the home icon instead of a back button
+	// here the click function provided below is not applicable
+	
+	getSupportActionBar().setTitle(pageTitle);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setIcon(R.mipmap.ic_launcher);
+	
+	// sets a back button instead of home icon
+	// here the click function provided below is applicable
+	getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setTitle(pageTitle);
+		
+	
+    ii. place this outside onCreate - 
+     
+        @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+	
