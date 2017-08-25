@@ -3382,4 +3382,29 @@ http://www.techotopia.com/index.php/Creating_and_Managing_Overflow_Menus_on_Andr
 https://stackoverflow.com/questions/32196424/how-to-add-headers-to-okhttp-request-interceptor
 
 
-138. make a GET requets in OKHTTP
+138. make a GET requets in OKHTTP - 
+
+public class GetProfileDetails extends AsyncTask<Void, Void, Void> {
+
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            try {
+                OkHttpClient client = new OkHttpClient();
+                Request request = new Request.Builder()
+                        .url("url")
+                        .get()
+                        .addHeader("-", "-")
+                        .build();
+
+                Response response = client.newCall(request).execute();
+                String res = response.body().string();
+                Log.i("res-get", res+"");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+    }
