@@ -3414,3 +3414,8 @@ public class GetProfileDetails extends AsyncTask<Void, Void, Void> {
 139. OKhttp PUT method - 
 
 https://stackoverflow.com/questions/34886172/okhttp-put-example
+
+
+140. Marshmallow runtime permissions - 
+
+https://gist.github.com/Asutosh11/d04bee4ae8e7238a52da24476ff158c5
