@@ -2693,58 +2693,45 @@ i. put this outside onCreate —
 
 
     // for recyclerview scrolling and checking if bottom has reached
-    LinearLayoutManager layoutManager;
     private boolean loading = true;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
-
 
 
 ii. put this inside onCreate - 
 
 
 
-layoutManager = new LinearLayoutManager(getActivity().getApplicationContext());
-        recyclerView = (RecyclerView)rootview.findViewById(R.id.weaving_recyclerView);
-        recyclerView.setLayoutManager(layoutManager);
-
-        
-// change the adapter with your adapter
-WeavingAdapter adapter=new WeavingAdapter(ViewAdsCollection.getWeavingAdsDetailsAsArray());
-        // Log.i("vieweadsarray", ViewAdsCollection.viewAdsDetailsList.get(0) + "");
-
-        recyclerView.setAdapter(adapter);
-
-
-
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+/**
+         * Implement pagination.
+         * When the list reaches the bottom most item on scrolling, add extra 20 items.
+         */
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
 
-                visibleItemCount = layoutManager.getChildCount();
-                Log.i("visibleitemcount", ""+visibleItemCount);
+                visibleItemCount = mLinearLayoutManager.getChildCount();
+                loading = true;
 
                 if (dy > 0) //check for scroll down
                 {
-                    Log.i("visibleitemcount", ""+visibleItemCount);
+                    loading = true;
+                    int visibleItemCount = mLinearLayoutManager.getChildCount();
+                    int totalItemCount = mLinearLayoutManager.getItemCount();
+                    int firstVisibleItemPosition = mLinearLayoutManager.findFirstVisibleItemPosition();
 
-                    totalItemCount = layoutManager.getItemCount();
-                    pastVisiblesItems = layoutManager.findFirstVisibleItemPosition();
 
-                    if (loading) {
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                    if (loading == true){
+                       if((visibleItemCount + firstVisibleItemPosition) >= totalItemCount){
                             loading = false;
-                            Log.i("llast", "Last Item Wow !");
-                            //Last item of recyclerview has reached. Do pagination.. i.e. fetch new data
-                            sendRequest(pageno);
+                            recyclerViewItemsCount = recyclerViewItemsCount + 20;
 
+                            adapter = new KickstarterItemsAdapter(kickStarterItemsList, getApplicationContext(), recyclerViewItemsCount);
+                            mRecyclerView.setAdapter(adapter);
 
                         }
                     }
                 }
             }
         });
-
 
 
 
