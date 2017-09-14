@@ -2693,16 +2693,16 @@ i. put this outside onCreate —
 
 
     // for recyclerview scrolling and checking if bottom has reached
+    private LinearLayoutManager mLinearLayoutManager;
     private boolean loading = true;
+    private int pastVisiblesItems, visibleItemCount, totalItemCount;
 
 
 ii. put this inside onCreate - 
 
-
-
-/**
-         * Implement pagination.
-         * When the list reaches the bottom most item on scrolling, add extra 20 items.
+        /**
+         * Implement pagination. Pagination: When the RecyclerView reaches the bottommost part, load the next page.
+         * Here, when the list reaches the bottom most item on scrolling, add extra 20 items.
          */
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -2721,6 +2721,9 @@ ii. put this inside onCreate -
 
                     if (loading == true){
                        if((visibleItemCount + firstVisibleItemPosition) >= totalItemCount){
+
+                            // Bottom of the RecyclerView has reached
+
                             loading = false;
                             recyclerViewItemsCount = recyclerViewItemsCount + 20;
 
@@ -2732,7 +2735,6 @@ ii. put this inside onCreate -
                 }
             }
         });
-
 
 
 
@@ -3406,3 +3408,12 @@ https://stackoverflow.com/questions/34886172/okhttp-put-example
 140. Marshmallow runtime permissions - 
 
 https://gist.github.com/Asutosh11/d04bee4ae8e7238a52da24476ff158c5
+
+
+141. Maintain aspect ration of an image in ImageView in XML - 
+
+      android:adjustViewBounds = "true"
+      
+      
+      
+
