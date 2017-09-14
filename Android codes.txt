@@ -3410,7 +3410,7 @@ https://stackoverflow.com/questions/34886172/okhttp-put-example
 https://gist.github.com/Asutosh11/d04bee4ae8e7238a52da24476ff158c5
 
 
-141. Maintain aspect ration of an image in ImageView in XML - 
+141. Maintain aspect ratio of an image in ImageView in XML - 
 
       android:adjustViewBounds = "true"
       
