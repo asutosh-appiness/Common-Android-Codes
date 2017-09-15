@@ -3413,6 +3413,16 @@ https://gist.github.com/Asutosh11/d04bee4ae8e7238a52da24476ff158c5
 141. Maintain aspect ratio of an image in ImageView in XML - 
 
       android:adjustViewBounds = "true"
+ 
+ 
+142. Using HTML in strings.xml - 
+
+     <string name="html"><![CDATA[<p>Text<p>]]></string> 
+     
+     
+     
+      
+      
       
       
       
