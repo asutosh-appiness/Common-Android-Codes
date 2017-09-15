@@ -3427,13 +3427,16 @@ https://gist.github.com/Asutosh11/d04bee4ae8e7238a52da24476ff158c5
 In the code below we can use simple HTML tags only.
 1. For some reasons, <br/> doesn't work, so I use \n instead.
 2. Also <center></center> deosn't work.
+3. Using formatted="false" is important here. Otherwise it doesn't render the HTML content.
 -->
 
 <string name="sso_success_header" formatted="false">
+
         <b><font size="20">Welcome to YipTV.</font></b>
         \n  \n
         Your account was successfully created. We invite you to start
         your <b>8-minute FREE Trial &amp; to subscribe to YipTV NOW!</b>.
+	
 </string>
       
       
