@@ -3444,7 +3444,7 @@ In the code below we can use simple HTML tags only.
       
 144. Preserve aspect ratio for an image in ImageView in XML - 
 
-<!-- You shoukd use android:src instead of android:background -->
+<!-- You should use android:src instead of android:background -->
 
 <ImageView
             android:layout_width="wrap_content"
