@@ -3442,6 +3442,19 @@ In the code below we can use simple HTML tags only.
       
       
       
+144. Preserve aspect ratio for an image in ImageView in XML - 
+
+<!-- You shoukd use android:src instead of android:background -->
+
+<ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxHeight="60dp"
+            android:adjustViewBounds="true"
+            android:id="@+id/fb_login"
+            android:src="@drawable/sso_free_sign_up_facebook"
+            />
       
-      
+
+
 
