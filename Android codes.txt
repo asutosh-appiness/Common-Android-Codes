@@ -3458,3 +3458,45 @@ In the code below we can use simple HTML tags only.
 
 
 
+145. Calling a method of the Fragment in the Parent Activity - 
+
+
+If you are using “import android.app.Fragment;” Then use either:
+----------------------------------------------------------------
+
+i)
+
+ExampleFragment fragment = (ExampleFragment) getFragmentManager().findFragmentById(R.id.example_fragment); 
+fragment.specific_function_name(); 
+
+Where R.id.example_fragment is most likely the FrameLayout id inside your xml layout. OR
+
+ii)
+
+ExampleFragment fragment = (ExampleFragment) getFragmentManager().findFragmentByTag(“FragTagName”); 
+fragment.specific_function_name(); 
+
+Where FragTagName is the name u specified when u did:
+
+TabHost mTabHost.newTabSpec(“FragTagName”)
+
+
+If you are using “import android.support.v4.app.Fragment;” Then use either:
+---------------------------------------------------------------------------
+
+i)
+
+ExampleFragment fragment = (ExampleFragment) getSupportFragmentManager().findFragmentById(R.id.example_fragment); 
+fragment.specific_function_name(); 
+
+OR
+
+ii)
+
+ExampleFragment fragment = (ExampleFragment) getSupportFragmentManager().findFragmentByTag(“FragTagName”); 
+fragment.specific_function_name(); 
+
+
+
+
+
